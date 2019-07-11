@@ -1,26 +1,29 @@
+
+#import staements
+
 import tweepy
-
 from textblob import TextBlob
-
 from flask import Flask,jsonify,request
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
+# public private key
 
-consumer_key = 'REZ01yf48hlCGIQulK1haGNBW'
-consumer_secret = '2czewJ6TUgHzrbyMNv89ddSYEzl9yFSu1kZoit7OwZ1gPMhUxp'
+consumer_key = ''
+consumer_secret = '2'
+access_token = ''
+access_token_secret = ''
 
-access_token = '965671910590832641-tzCVPpnkBYpwAkD9fzLtvJy1IgTHnfN'
-access_token_secret = 'rpADnaiJ9T6A2cylSuiGEj584VExx6oVpkLszjJL96Kut'
-
+#auth
 auth=tweepy.OAuthHandler(consumer_key,consumer_secret)
 auth.set_access_token(access_token,access_token_secret)
 
 api=tweepy.API(auth)
 
 @app.route('/',methods= ['POST'])
+# main function
 def sentimental_anlysis():
     values = request.get_json()
     if not values:
@@ -28,6 +31,7 @@ def sentimental_anlysis():
         return jsonify(response),400
     word =  values['word']
     tweets=api.search(word)
+    # main part giving value between -1 and 1 for polarity of sentiments, -1 being most negative
     for tweet in tweets:
         analysis = TextBlob(tweet.text)
         pol=analysis.sentiment.polarity
